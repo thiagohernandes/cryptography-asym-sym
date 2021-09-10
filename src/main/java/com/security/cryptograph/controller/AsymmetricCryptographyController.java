@@ -28,10 +28,10 @@ public class AsymmetricCryptographyController {
 
     private final AsymmetricCryptographyService service;
 
-    @Value("${security.public-key}")
+    @Value("${security.public-key-base64}")
     private String publicKeyStaticBase64;
 
-    @Value("${security.private-key}")
+    @Value("${security.private-key-base64}")
     private String privateKeyStaticBase64;
 
     @GetMapping("/asym-dynamic/{valor}")
@@ -55,9 +55,6 @@ public class AsymmetricCryptographyController {
 
     @GetMapping("/asym-static/{valor}")
     public ResponseEntity<String> asymStaticKeyPair(@PathVariable("valor") String valor) throws Exception {
-        final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RsaAlgorithm.DEFAULT.getJceName());
-        keyGen.initialize(2048);
-
         byte[] encryptedBytes = service.encrypt(publicKeyStaticBase64, valor.getBytes(StandardCharsets.UTF_8));
         byte[] decryptedBytes = service.decrypt(privateKeyStaticBase64, encryptedBytes);
 

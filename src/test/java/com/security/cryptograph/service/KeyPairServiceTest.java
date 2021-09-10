@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
+import java.util.Base64;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,5 +26,9 @@ public class KeyPairServiceTest {
         assertNotNull(keyPair);
         assertEquals(keyPair.getPublic().getAlgorithm(), ALGORITHM);
         assertEquals(keyPair.getPrivate().getAlgorithm(), ALGORITHM);
+        String validPublicKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+        String validPrivateKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+        assertNotNull(validPublicKeyBase64);
+        assertNotNull(validPrivateKeyBase64);
     }
 }
