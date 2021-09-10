@@ -3,9 +3,7 @@ package com.security.cryptograph.controller;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +53,7 @@ public class AsymmetricCryptographyController {
 
     @GetMapping("/asym-static/{valor}")
     public ResponseEntity<String> asymStaticKeyPair(@PathVariable("valor") String valor) throws Exception {
+
         byte[] encryptedBytes = service.encrypt(publicKeyStaticBase64, valor.getBytes(StandardCharsets.UTF_8));
         byte[] decryptedBytes = service.decrypt(privateKeyStaticBase64, encryptedBytes);
 
