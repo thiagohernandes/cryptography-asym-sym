@@ -6,8 +6,9 @@ import java.security.KeyPairGenerator;
 import org.springframework.stereotype.Component;
 
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class KeyPairService {
 
     public static final String KEY_ALGORITHM = "RSA";
