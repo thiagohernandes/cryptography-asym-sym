@@ -1,7 +1,7 @@
 # Security in Java - AES, Asymmetric and Symmetric Examples
 
 ### AES
-- test examples contains encrypt/decrypt using any secret key
+- test examples contains encrypt/decrypt using any secret key + integration with HTML/JavaScript
 
 ### Cryptography Asymmetric
 - test examples contains base64 format of private key and public key 
