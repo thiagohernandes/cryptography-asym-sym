@@ -1,20 +1,10 @@
 package com.security.cryptograph.service;
 
-import com.security.cryptograph.domain.Country;
-import lombok.SneakyThrows;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import javax.crypto.Cipher;
-import javax.crypto.SealedObject;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doThrow;
 
@@ -39,7 +29,7 @@ public class AesCryptoServiceTest {
 
     @Test
     public void shouldEncryptAndDecryptModeKeySizeIterationTextCorrectly() throws Exception {
-        aesCryptoService = new AesCryptoService(128,1989);
+        aesCryptoService = new AesCryptoService(128, 1989);
         encryptPass = aesCryptoService.encrypt(SECRET, PASS_ORIGINAL);
         decryptPass = aesCryptoService.decrypt(SECRET, encryptPass);
         assertEquals(PASS_ORIGINAL, decryptPass);
