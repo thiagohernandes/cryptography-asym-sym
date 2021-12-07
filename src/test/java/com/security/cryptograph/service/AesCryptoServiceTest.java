@@ -38,7 +38,7 @@ public class AesCryptoServiceTest {
     }
 
     @Test
-    public void shouldEncryptAndDecryptModeKeySizeIteraionTextCorrectly() throws Exception {
+    public void shouldEncryptAndDecryptModeKeySizeIterationTextCorrectly() throws Exception {
         aesCryptoService = new AesCryptoService(128,1989);
         encryptPass = aesCryptoService.encrypt(SECRET, PASS_ORIGINAL);
         decryptPass = aesCryptoService.decrypt(SECRET, encryptPass);

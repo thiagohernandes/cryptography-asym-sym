@@ -14,14 +14,14 @@
 
   <body>
  
-    <h1>ORBI RENNER - CryptoJs AES Encryption/Decryption</h1>
+    <h1>JavaScript CryptoJs AES Encryption/Decryption</h1>
     <div id="encrypted"></div>
     <div id="decrypted"></div>
     <script src="CriptoUtil.js"></script>
      <script>
       var aes = new CriptoUtil();
-      var encrypted = aes.encrypt('meu big secret', 'meu password');
-      var decrypted = aes.decrypt('meu big secret', encrypted);
+      var encrypted = aes.encrypt('my big secret', 'my password');
+      var decrypted = aes.decrypt('my big secret', encrypted);
       console.log('encrypted: ' + encrypted);
       console.log('decrypted: ' + decrypted);
       </script>

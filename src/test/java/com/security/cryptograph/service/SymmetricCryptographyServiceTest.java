@@ -21,20 +21,19 @@ import lombok.SneakyThrows;
 @RunWith(MockitoJUnitRunner.class)
 public class SymmetricCryptographyServiceTest {
 
-    private static final String TEXT_INPUT = "texto a criptografar";
+    private static final String TEXT_INPUT = "text to encrypt";
     final Country country = Country.builder().name("USA").currency("dollar").build();
     final String algorithm = "AES/CBC/PKCS5Padding";
 
     SecretKey key;
     IvParameterSpec ivParameterSpec;
 
-    private Cipher cipher;
     private SymmetricCryptographyService symmetricCryptographyService;
 
     @Before
     @SneakyThrows
     public void setUp() {
-        this.cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         this.symmetricCryptographyService = new SymmetricCryptographyService(cipher);
         this.key = symmetricCryptographyService.generateKey(128);
         this.ivParameterSpec = symmetricCryptographyService.generateIv();

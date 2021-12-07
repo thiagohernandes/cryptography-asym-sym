@@ -14,9 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.rsa.crypto.RsaAlgorithm;
 
 import lombok.SneakyThrows;
+import org.springframework.test.util.ReflectionTestUtils;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -25,13 +28,12 @@ public class AsymmetricCryptographyServiceTest {
     private static final byte[] SOME_DECRYPTED_VALUE = "decrypted_value".getBytes();
     private static final byte[] SOME_ENCRYPTED_VALUE = "abcdefgh".getBytes();
 
-    private Cipher cipher;
     private AsymmetricCryptographyService asymmetricCryptographyService;
 
     @Before
     @SneakyThrows
     public void setUp() {
-        this.cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
         this.asymmetricCryptographyService = new AsymmetricCryptographyService(cipher);
     }
 

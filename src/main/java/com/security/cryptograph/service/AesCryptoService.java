@@ -24,9 +24,10 @@ public class AesCryptoService {
     private static final String KEY_ALGORITHM = "PBKDF2WithHmacSHA1";
     private static final int IV_SIZE = 128;
     private static final int IV_LENGTH = IV_SIZE / 4;
+    private static final DataTypeEnum DATA_TYPE = DataTypeEnum.BASE64;
+    private static final String AES_ALGORITHM = "AES";
     private int keySize = 256;
     private int iterationCount = 1989;
-    private DataTypeEnum dataType = DataTypeEnum.BASE64;
     private Cipher cipher;
     private int saltLength;
 
@@ -35,7 +36,7 @@ public class AesCryptoService {
             cipher = Cipher.getInstance(CIPHER_ALGORITHM);
             saltLength = this.keySize / 4;
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
-            log.error("Ocorreu o seguinte erro no construtor: ", e);
+            log.error("Constructor error - AesCryptoService ", e);
         }
     }
 
@@ -69,11 +70,31 @@ public class AesCryptoService {
         return DatatypeConverter.printHexBinary(ba);
     }
 
-    public String encrypt(String salt, String iv, String passPhrase, String plainText) throws Exception {
+    public String encrypt(String passphrase, String plainText) throws Exception {
+        String salt = toHex(generateRandom(keySize / 8));
+        String iv = toHex(generateRandom(IV_SIZE / 8));
+        String cipherText = handleEncrypt(salt, iv, passphrase, plainText);
+        return salt + iv + cipherText;
+    }
+
+    public String decrypt(String passPhrase, String cipherText) throws Exception {
+        final String msg = "Error on decrypt";
+        try {
+            String salt = cipherText.substring(0, saltLength);
+            String iv = cipherText.substring(saltLength, saltLength + IV_LENGTH);
+            String ct = cipherText.substring(saltLength + IV_LENGTH);
+            return handleDecrypt(salt, iv, passPhrase, ct);
+        } catch (Exception e) {
+            log.error(msg, e);
+            throw new Exception(msg);
+        }
+    }
+
+    private String handleEncrypt(String salt, String iv, String passPhrase, String plainText) throws Exception {
         SecretKey key = generateKey(salt, passPhrase);
         byte[] encrypted = doFinal(Cipher.ENCRYPT_MODE, key, iv, plainText.getBytes(StandardCharsets.UTF_8));
         String cipherText;
-        if (dataType.equals(DataTypeEnum.HEX)) {
+        if (DATA_TYPE.equals(DataTypeEnum.HEX)) {
             cipherText = toHex(encrypted);
         } else {
             cipherText = toBase64(encrypted);
@@ -81,35 +102,16 @@ public class AesCryptoService {
         return cipherText;
     }
 
-    public String encrypt(String passphrase, String plainText) throws Exception {
-        String salt = toHex(generateRandom(keySize / 8));
-        String iv = toHex(generateRandom(IV_SIZE / 8));
-        String cipherText = encrypt(salt, iv, passphrase, plainText);
-        return salt + iv + cipherText;
-    }
-
-    public String decrypt(String salt, String iv, String passPhrase, String cipherText) throws Exception {
+    private String handleDecrypt(String salt, String iv, String passPhrase, String cipherText) throws Exception {
         SecretKey key = generateKey(salt, passPhrase);
         byte[] encrypted;
-        if (dataType.equals(DataTypeEnum.HEX)) {
+        if (DATA_TYPE.equals(DataTypeEnum.HEX)) {
             encrypted = fromHex(cipherText);
         } else {
             encrypted = fromBase64(cipherText);
         }
         byte[] decrypted = doFinal(Cipher.DECRYPT_MODE, key, iv, encrypted);
         return new String(decrypted, StandardCharsets.UTF_8);
-    }
-
-    public String decrypt(String passPhrase, String cipherText) throws Exception {
-        try {
-            String salt = cipherText.substring(0, saltLength);
-            String iv = cipherText.substring(saltLength, saltLength + IV_LENGTH);
-            String ct = cipherText.substring(saltLength + IV_LENGTH);
-            return decrypt(salt, iv, passPhrase, ct);
-        } catch (Exception e) {
-            log.error("Ocorreu o seguinte erro ao tentar decriptar", e);
-            throw new Exception("Problema ao tentar decriptar!");
-        }
     }
 
     private byte[] doFinal(int encryptMode, SecretKey key, String iv, byte[] bytes) throws Exception {
@@ -120,14 +122,10 @@ public class AesCryptoService {
     private SecretKey generateKey(String salt, String passphrase) throws Exception {
         SecretKeyFactory factory = SecretKeyFactory.getInstance(KEY_ALGORITHM);
         KeySpec spec = new PBEKeySpec(passphrase.toCharArray(), fromHex(salt), iterationCount, keySize);
-        return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), "AES");
+        return new SecretKeySpec(factory.generateSecret(spec).getEncoded(), AES_ALGORITHM);
     }
 
-    public DataTypeEnum getDataType() {
-        return dataType;
-    }
-
-    public enum DataTypeEnum {
+    private enum DataTypeEnum {
         HEX,
         BASE64
     }

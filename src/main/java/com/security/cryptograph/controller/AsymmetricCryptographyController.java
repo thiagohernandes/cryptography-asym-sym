@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/cripto")
+@RequestMapping("/crypto")
 @RequiredArgsConstructor
 @Slf4j
 public class AsymmetricCryptographyController {
@@ -32,8 +32,8 @@ public class AsymmetricCryptographyController {
     @Value("${security.private-key-base64}")
     private String privateKeyStaticBase64;
 
-    @GetMapping("/asym-dynamic/{valor}")
-    public ResponseEntity<String> asymDynamicKeyPair(@PathVariable("valor") String valor) throws Exception {
+    @GetMapping("/dynamic/{text}")
+    public ResponseEntity<String> asymDynamicKeyPair(@PathVariable("text") String text) throws Exception {
         final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(RsaAlgorithm.DEFAULT.getJceName());
         keyGen.initialize(2048);
 
@@ -41,27 +41,29 @@ public class AsymmetricCryptographyController {
         String validPublicKeyBase64 = Base64.getEncoder().encodeToString(validKeyPair.getPublic().getEncoded());
         String validPrivateKeyBase64 = Base64.getEncoder().encodeToString(validKeyPair.getPrivate().getEncoded());
 
-        byte[] encryptedBytes = service.encrypt(validPublicKeyBase64, valor.getBytes(StandardCharsets.UTF_8));
+        byte[] encryptedBytes = service.encrypt(validPublicKeyBase64, text.getBytes(StandardCharsets.UTF_8));
         byte[] decryptedBytes = service.decrypt(validPrivateKeyBase64, encryptedBytes);
 
-        log.info("Valor original -> {}", valor);
-        log.info("Valor encriptado -> {}", new String(encryptedBytes));
-        log.info("Valor decriptado -> {}", new String(decryptedBytes));
+        makeMsgValue(text, encryptedBytes, decryptedBytes);
 
         return ResponseEntity.ok(new String(decryptedBytes));
     }
 
-    @GetMapping("/asym-static/{valor}")
-    public ResponseEntity<String> asymStaticKeyPair(@PathVariable("valor") String valor) throws Exception {
+    @GetMapping("/static/{text}")
+    public ResponseEntity<String> asymStaticKeyPair(@PathVariable("text") String text) throws Exception {
 
-        byte[] encryptedBytes = service.encrypt(publicKeyStaticBase64, valor.getBytes(StandardCharsets.UTF_8));
+        byte[] encryptedBytes = service.encrypt(publicKeyStaticBase64, text.getBytes(StandardCharsets.UTF_8));
         byte[] decryptedBytes = service.decrypt(privateKeyStaticBase64, encryptedBytes);
 
-        log.info("Valor original -> {}", valor);
-        log.info("Valor encriptado -> {}", new String(encryptedBytes));
-        log.info("Valor decriptado -> {}", new String(decryptedBytes));
+        makeMsgValue(text, encryptedBytes, decryptedBytes);
 
         return ResponseEntity.ok(new String(decryptedBytes));
+    }
+
+    private void makeMsgValue(String text, byte[] encryptedBytes, byte[] decryptedBytes) {
+        log.info("Original value -> {}", text);
+        log.info("Value encrypted -> {}", new String(encryptedBytes));
+        log.info("Value decrypted -> {}", new String(decryptedBytes));
     }
 
 }

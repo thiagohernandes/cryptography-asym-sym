@@ -24,8 +24,8 @@ public class KeyPairServiceTest {
     public void shouldGenerateKeyPair() throws Exception {
         KeyPair keyPair = keyPairService.generateKeyPair();
         assertNotNull(keyPair);
-        assertEquals(keyPair.getPublic().getAlgorithm(), ALGORITHM);
-        assertEquals(keyPair.getPrivate().getAlgorithm(), ALGORITHM);
+        assertEquals(ALGORITHM, keyPair.getPublic().getAlgorithm());
+        assertEquals(ALGORITHM, keyPair.getPrivate().getAlgorithm());
         String validPublicKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
         String validPrivateKeyBase64 = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
         assertNotNull(validPublicKeyBase64);

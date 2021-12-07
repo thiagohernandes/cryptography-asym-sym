@@ -1,12 +1,10 @@
 package com.security.cryptograph.service;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-
-import org.springframework.stereotype.Component;
-
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 
 @Service
 public class KeyPairService {
